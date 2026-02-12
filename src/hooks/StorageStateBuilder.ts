@@ -12,7 +12,7 @@ export type StorageStateOptionsBase = {
 };
 
 type StorageDescriptor =
-    | { type: "urlParams"; options?: URLParamStorageOptions }
+    | { type: "urlParams" }
     | { type: "cookie"; options?: CookieStorageOptions }
     | { type: "localStorage" }
     | { type: "sessionStorage" }
@@ -21,10 +21,10 @@ type StorageDescriptor =
 class StorageStateHookBuilder<TOptions extends StorageStateOptionsBase = {}> {
     private descriptors: StorageDescriptor[] = [];
 
-    addURLParamStorage(
-        options?: URLParamStorageOptions
-    ): StorageStateHookBuilder<TOptions & { urlParamStorage?: URLParamStorageOptions }> {
-        this.descriptors.push({ type: "urlParams", options });
+    addURLParamStorage(): StorageStateHookBuilder<
+        TOptions & { urlParamStorage?: URLParamStorageOptions }
+    > {
+        this.descriptors.push({ type: "urlParams" });
         return this as StorageStateHookBuilder<
             TOptions & { urlParamStorage?: URLParamStorageOptions }
         >;
@@ -32,7 +32,9 @@ class StorageStateHookBuilder<TOptions extends StorageStateOptionsBase = {}> {
 
     addCookieStorage(
         options?: CookieStorageOptions
-    ): StorageStateHookBuilder<TOptions & { cookieStorage?: CookieStorageOptions }> {
+    ): StorageStateHookBuilder<
+        TOptions & { cookieStorage?: CookieStorageOptions }
+    > {
         this.descriptors.push({ type: "cookie", options });
         return this as StorageStateHookBuilder<
             TOptions & { cookieStorage?: CookieStorageOptions }
@@ -75,9 +77,7 @@ class StorageStateHookBuilder<TOptions extends StorageStateOptionsBase = {}> {
             const storages: Storage[] = descriptors.map((d) => {
                 switch (d.type) {
                     case "urlParams":
-                        return useURLParamStorage(
-                            options?.urlParamStorage ?? d.options
-                        );
+                        return useURLParamStorage(options?.urlParamStorage);
                     case "cookie":
                         return useCookieStorage(
                             options?.cookieStorage ?? d.options
