@@ -135,9 +135,4 @@ class CookieStorage implements Storage {
     }
 }
 
-const useCookieStorage = (options?: CookieStorageOptions): CookieStorage => {
-    const cookieStorageRef = useRef<CookieStorage>(new CookieStorage(options));
-    return cookieStorageRef.current;
-}
-
-export { CookieStorage, useCookieStorage };
+export { CookieStorage };

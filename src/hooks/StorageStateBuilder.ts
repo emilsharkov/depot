@@ -1,5 +1,6 @@
+import { useRef } from "react";
 import {
-    useCookieStorage,
+    CookieStorage,
     useURLParamStorage,
 } from "../adapters";
 import type { CookieStorageOptions, URLParamStorageOptions } from "../adapters";
@@ -79,15 +80,17 @@ class StorageStateHookBuilder<TOptions extends StorageStateOptionsBase = {}> {
                     case "urlParams":
                         return useURLParamStorage(options?.urlParamStorage);
                     case "cookie":
-                        return useCookieStorage(
-                            options?.cookieStorage ?? d.options
+                        const cookieStorageRef = useRef<CookieStorage>(
+                            new CookieStorage(options?.cookieStorage ?? d.options)
                         );
+                        return cookieStorageRef.current;
                     case "localStorage":
                         return localStorage;
                     case "sessionStorage":
                         return sessionStorage;
                     case "custom":
-                        return d.storage;
+                        const customStorageRef = useRef<Storage>(d.storage);
+                        return customStorageRef.current;
                 }
             });
 
@@ -96,29 +99,6 @@ class StorageStateHookBuilder<TOptions extends StorageStateOptionsBase = {}> {
     }
 }
 
-const createStorageStateHookBuilder = (): StorageStateHookBuilder =>
-    new StorageStateHookBuilder();
-
-const useLocalStorageState = createStorageStateHookBuilder()
-    .addLocalStorage()
-    .build();
-
-const useURLParamLocalSessionStorageState = createStorageStateHookBuilder()
-    .addURLParamStorage()
-    .addLocalStorage()
-    .addSessionStorage()
-    .build();
-
-const useCookieURLParamLocalSessionStorageState = createStorageStateHookBuilder()
-    .addCookieStorage()
-    .addURLParamStorage()
-    .addLocalStorage()
-    .addSessionStorage()
-    .build();
-
-const urlParamStorage = useURLParamStorage();
-const useCustomStorageState = createStorageStateHookBuilder()
-    .addStorage(urlParamStorage)
-    .build();
+const createStorageStateHookBuilder = new StorageStateHookBuilder();
 
 export { createStorageStateHookBuilder, StorageStateHookBuilder };

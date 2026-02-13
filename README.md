@@ -1,6 +1,6 @@
-# Depot
+# depot
 
-Simultaneously synchronize React state across multiple components with any amount of Browser `Storage` implementations
+Synchronize React state with any amount of Browser `Storage` implementations across all your components
 
 **Supports:**
 - localStorage
@@ -38,7 +38,7 @@ On initialization, we prioritize the first declared storages (in order or declar
 When writing to storages, we write to all of them.
 
 ```tsx
-const useURLParamLocalSessionStorageState = createStorageStateHookBuilder()
+const useURLParamLocalStorageState = createStorageStateHookBuilder()
   .addURLParamStorage()   // ?filters=... wins
   .addLocalStorage()
   .build();
